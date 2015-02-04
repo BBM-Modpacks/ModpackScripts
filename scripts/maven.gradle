@@ -1,0 +1,41 @@
+apply plugin: 'maven-publish'
+publishing {
+    publications {
+        mavenJava(MavenPublication)
+        {
+            artifact jar
+            artifact deobfJar
+            artifact("output/build.properties") {
+                classifier "build"
+                extension "properties"
+            }
+            artifact ("CompiledWith.txt") {
+                classifier "CompiledWith"
+                extension "txt"
+            }
+        }
+        myPublication(MavenPublication) {      
+      pom.withXml {
+        from components.java
+        asNode().appendNode('description', 'Created on ' + getDate())        
+        def deps = configurations.compile.allDependencies
+        def dep_node = asNode().appendNode('dependencies')
+      }
+    }
+  }
+
+    repositories {
+        maven {
+            if (project.hasProperty("local") && project.getProperty("local") == "true")
+                url "file:" + projectDir.path + "/build/maven"
+            else
+                url "file:///var/www/html/maven"
+        }
+    }
+}
+
+def getDate() {
+    def date = new Date()
+    def formattedDate = date.format('yyyyMMddHHmmss')
+    return formattedDate
+}

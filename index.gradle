@@ -1,0 +1,2 @@
+apply from: './BuiltBrokenScripts/scripts/maven.gradle'
+apply from: './BuiltBrokenScripts/scripts/clean.gradle'
